@@ -10,10 +10,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use("/api", columnRouter);
-app.use("/", (req, res) => {
-    res.send({
-        message: "not working",
-    });
-});
 
-app.listen(PORT, () => console.log(`server started on post ${PORT}`));
+const server = app.listen(PORT, () => {
+    const port = server.address().port;
+    console.log(`server started on post ${port}`);
+});
