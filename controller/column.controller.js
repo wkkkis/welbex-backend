@@ -29,6 +29,56 @@ class ColumnController {
         });
     }
 
+    async filterColumns(req, res) {
+        const { page, size } = req.query;
+        const { column, type, value } = req.body;
+        let query = "";
+        let count = null;
+
+        switch (type) {
+            case "equals":
+                query = `SELECT * FROM column_data WHERE ${column} = $1 ORDER BY column_data."id" DESC LIMIT $2 OFFSET (($3 - 1) * $2);`;
+                count = await db.query(
+                    `SELECT  count (*) FROM column_data WHERE ${column} = $1`,
+                    [value]
+                );
+                break;
+            case "contains":
+                query = `SELECT * FROM column_data WHERE ${column} LIKE $1 ORDER BY column_data."id" DESC LIMIT $2 OFFSET (($3 - 1) * $2);`;
+                count = await db.query(
+                    `SELECT  count (*) FROM column_data WHERE ${column} LIKE $1`,
+                    [value]
+                );
+                break;
+            case "more":
+                query = `SELECT * FROM column_data WHERE ${column} > $1 ORDER BY column_data."id" DESC LIMIT $2 OFFSET (($3 - 1) * $2);`;
+                count = await db.query(
+                    `SELECT  count (*) FROM column_data WHERE ${column} > $1`,
+                    [value]
+                );
+                break;
+            case "less":
+                query = `SELECT * FROM column_data WHERE ${column} < $1 ORDER BY column_data."id" DESC LIMIT $2 OFFSET (($3 - 1) * $2);`;
+                count = await db.query(
+                    `SELECT  count (*) FROM column_data WHERE ${column} < $1`,
+                    [value]
+                );
+                break;
+            default:
+                return data;
+        }
+
+        const data = await db.query(query, [value, size, page]);
+
+        res.json({
+            columns: data.rows,
+            offset: parseInt(page),
+            limit: parseInt(size),
+            totalCount: parseInt(count.rows[0].count || "5"),
+            message: "ok",
+        });
+    }
+
     async getOneColumn(req, res) {
         const { id } = req.params;
         const query = `SELECT * FROM column_data where id=$1;`;
