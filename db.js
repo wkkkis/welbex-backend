@@ -9,6 +9,6 @@ const herokuOptions = {
     },
 };
 
-const pool = new Pool(options);
+const pool = new Pool(herokuOptions);
 
 module.exports = pool;
