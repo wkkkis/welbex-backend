@@ -8,7 +8,7 @@ class ColumnController {
         const { rows } = await db.query(query, [date, name, count, distance]);
 
         res.json({
-            column: rows[0],
+            columns: rows[0],
             message: `Колонка была успешно создана`,
         });
     }
@@ -21,10 +21,11 @@ class ColumnController {
         const count = await db.query(`SELECT  count (*) from column_data`);
 
         res.json({
-            columns: data.rows,
+            columns: data.rows?.rewerse(),
             offset: parseInt(page),
             limit: parseInt(size),
             totalCount: parseInt(count.rows[0].count),
+            message: "ok",
         });
     }
 
@@ -35,7 +36,8 @@ class ColumnController {
         const { rows } = await db.query(query, [id]);
 
         res.json({
-            column: rows[0],
+            columns: rows[0],
+            message: "ok",
         });
     }
 
@@ -53,7 +55,7 @@ class ColumnController {
         ]);
 
         res.json({
-            column: rows[0],
+            columns: rows[0],
             message: `Колонка под id=${id} успешно обновлена`,
         });
     }
@@ -64,6 +66,7 @@ class ColumnController {
 
         const data = await db.query(query, [id]);
         res.json({
+            columns: null,
             message: "Успешно удалено",
         });
     }
