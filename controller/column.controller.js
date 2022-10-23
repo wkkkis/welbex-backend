@@ -46,10 +46,16 @@ class ColumnController {
         const { date, name, count, distance } = req.body;
         const query = `UPDATE column_data SET date_creation = $1, name_column = $2, count= $3, distance= $4 WHERE id = $5 RETURNING *`;
 
-        const data = await db.query(query, [date, name, count, distance, id]);
+        const { rows } = await db.query(query, [
+            date,
+            name,
+            count,
+            distance,
+            id,
+        ]);
 
         res.json({
-            columns: data,
+            columns: rows[0],
             message: `Колонка под id=${id} успешно обновлена`,
         });
     }
