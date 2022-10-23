@@ -21,7 +21,7 @@ class ColumnController {
         const count = await db.query(`SELECT  count (*) from column_data`);
 
         res.json({
-            columns: data.rows?.reverse(),
+            columns: data.rows,
             offset: parseInt(page),
             limit: parseInt(size),
             totalCount: parseInt(count.rows[0].count),
