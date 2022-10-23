@@ -3,7 +3,7 @@ const db = require("../db");
 class ColumnController {
     async createColumn(req, res) {
         const { date, name, count, distance } = req.body;
-        const query = `INSERT INTO column_data (date_creation, name_column, count, distance) values ($1, $2, $3, $4) RETURNING *`;
+        const query = `INSERT INTO column_data (date_creation, name_column, count, distance) values ($1, $2, $3, $4) RETURNING *;`;
 
         const { rows } = await db.query(query, [date, name, count, distance]);
 
@@ -31,7 +31,7 @@ class ColumnController {
 
     async getOneColumn(req, res) {
         const { id } = req.params;
-        const query = `SELECT * FROM column_data where id = $1`;
+        const query = `SELECT * FROM column_data where id=$1;`;
 
         const { rows } = await db.query(query, [id]);
 
@@ -44,18 +44,12 @@ class ColumnController {
     async updateColumn(req, res) {
         const { id } = req.params;
         const { date, name, count, distance } = req.body;
-        const query = `UPDATE column_data set date_creation = $1, name_column = $2, count = $3, distance = $4 where id = $4 RETURNING *`;
+        const query = `UPDATE column_data SET date_creation = $1, name_column = $2, count= $3, distance= $4 WHERE id = $5 RETURNING *`;
 
-        const { rows } = await db.query(query, [
-            date,
-            name,
-            count,
-            distance,
-            id,
-        ]);
+        const data = await db.query(query, [date, name, count, distance, id]);
 
         res.json({
-            columns: rows[0],
+            columns: data,
             message: `Колонка под id=${id} успешно обновлена`,
         });
     }
