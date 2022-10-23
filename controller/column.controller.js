@@ -15,7 +15,7 @@ class ColumnController {
 
     async getColumns(req, res) {
         const { page, size } = req.query;
-        const query = `SELECT * FROM REVERSE(column_data) ORDER BY column_data."id" LIMIT $2 OFFSET (($1 - 1) * $2);`;
+        const query = `SELECT * FROM column_data ORDER BY column_data DESC."id" LIMIT $2 OFFSET (($1 - 1) * $2);`;
 
         const data = await db.query(query, [page, size]);
         const count = await db.query(`SELECT  count (*) from column_data`);
